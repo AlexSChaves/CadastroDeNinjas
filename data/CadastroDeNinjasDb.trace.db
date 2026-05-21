@@ -1,0 +1,7 @@
+2026-05-20 17:00:05.933608-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO tb_missao (id, nome, dificuldade)\000d\000aVALUES \000d\000a              (1, 'Resgatar o gato na árvore', 'Fácil'),\000d\000a              (2, 'Escolta de cidadão para outra vila', 'Médio'),\000d\000a              (3, 'Derrote um grupo terrorista', 'Difícil'),[*]"; expected "ROW (, (, DEFAULT, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+INSERT INTO tb_missao (id, nome, dificuldade)
+VALUES 
+              (1, 'Resgatar o gato na árvore', 'Fácil'),
+              (2, 'Escolta de cidadão para outra vila', 'Médio'),
+              (3, 'Derrote um grupo terrorista', 'Difícil'), [42001-240]

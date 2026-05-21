@@ -16,8 +16,8 @@ public class MissaoController {
 
     //Adicionar Missões (CREATE)
     @PostMapping("/criar")
-    public String criarMissao(){
-        return "Missao criada";
+    public MissaoModel criarMissao(@RequestBody MissaoModel missao){
+        return missaoService.criarMissao(missao);
     }
 
     //Mostrar Missao por ID (READ)

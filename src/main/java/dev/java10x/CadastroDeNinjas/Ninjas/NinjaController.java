@@ -3,7 +3,7 @@ package dev.java10x.CadastroDeNinjas.Ninjas;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("ninjas")
+@RequestMapping("/ninjas")
 public class NinjaController {
 
     //Adicionar Ninjas (CREATE)

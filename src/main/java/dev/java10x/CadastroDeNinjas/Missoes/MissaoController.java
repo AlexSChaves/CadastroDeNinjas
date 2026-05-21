@@ -21,13 +21,13 @@ public class MissaoController {
     }
 
     //Mostrar Missao por ID (READ)
-    @GetMapping("/ID")
-    public String mostrarMissaoPorID(){
-        return "Missão apresentado por ID";
+    @GetMapping("/listar/{id}")
+    public MissaoModel listarMissaoPorID(@PathVariable Long id){
+        return missaoService.listarMissaoPorID(id);
     }
 
     //Mostrar todas as Missões (READ)
-    @GetMapping("/todas")
+    @GetMapping("/listar")
     public List<MissaoModel> mostrarMissoes(){
         return missaoService.listarMissoes();
     }

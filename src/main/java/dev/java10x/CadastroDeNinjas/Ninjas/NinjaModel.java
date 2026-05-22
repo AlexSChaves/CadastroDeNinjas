@@ -29,7 +29,7 @@ public class NinjaModel {
     private String aldeia;
 
     @Column(name = "idade")
-    private int idade;
+    private Integer idade;
 
     //@ManyToOne um ninja para uma única missão
     @ManyToOne

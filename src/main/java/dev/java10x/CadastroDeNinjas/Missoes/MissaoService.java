@@ -4,49 +4,53 @@ import dev.java10x.CadastroDeNinjas.Ninjas.NinjaModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MissaoService {
 
     private final MissaoRepository missaoRepository;
+    private final MissaoMapper missaoMapper;
 
-    public MissaoService(MissaoRepository missaoRepository) {
+    public MissaoService(MissaoRepository missaoRepository, MissaoMapper missaoMapper) {
         this.missaoRepository = missaoRepository;
+        this.missaoMapper = missaoMapper;
     }
 
     //Listar todas as Missões
-    public List<MissaoModel> listarMissoes(){
-        return missaoRepository.findAll();
+    public List<MissaoDTO> listarMissoes(){
+        List<MissaoModel> missoes = missaoRepository.findAll();
+        return missoes.stream()
+                .map(missaoMapper::map)
+                .collect(Collectors.toList());
     }
 
     //Listar todas as missões por ID
-    public MissaoModel listarMissaoPorID(Long id){
+    public MissaoDTO listarMissaoPorID(Long id){
         Optional<MissaoModel> missaoPorID = missaoRepository.findById(id);
-        return missaoPorID.orElse(null);
+        return missaoPorID.map(missaoMapper::map).orElse(null);
     }
 
     //Criar missão
-    public MissaoModel criarMissao(MissaoModel missao){
-        return missaoRepository.save(missao);
+    public MissaoDTO criarMissao(MissaoDTO missaoDTO){
+        MissaoModel missao = missaoMapper.map(missaoDTO);
+        missao = missaoRepository.save(missao);
+        return missaoMapper.map(missao);
     }
 
     //Atualizar Missao
-    public MissaoModel atualizarMissao(Long id, MissaoModel missaoAtualizado){
-        Optional<MissaoModel> missaoExiste = missaoRepository.findById(id);
+    public MissaoDTO atualizarMissao(Long id, MissaoDTO missaoDTO){
+        Optional<MissaoModel> missaoExistente = missaoRepository.findById(id);
 
-        if (missaoExiste.isPresent()){
-            MissaoModel missao = missaoExiste.get();
+        if (missaoExistente.isPresent()){
 
-            if(missaoAtualizado.getNome() != null){
-                missao.setNome(missaoAtualizado.getNome());
-            }
-            if(missaoAtualizado.getDificuldade() != null){
-                missao.setDificuldade(missaoAtualizado.getDificuldade());
-            }
+            MissaoModel missaoAtualizada = missaoExistente.get();
 
-
-            return missaoRepository.save(missao);
+            missaoAtualizada.setNome(Objects.requireNonNullElse(missaoDTO.getNome(), missaoAtualizada.getNome()));
+            missaoAtualizada.setDificuldade(Objects.requireNonNullElse(missaoDTO.getDificuldade(), missaoAtualizada.getDificuldade()));
+            missaoAtualizada.setNinjas(Objects.requireNonNullElse(missaoDTO.getNinjas(), missaoAtualizada.getNinjas()));
         }
 
         return null;

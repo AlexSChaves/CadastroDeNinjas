@@ -34,3 +34,7 @@ build/
 .vscode/
 
 .env
+
+# Ignorar o banco de dados local do H2
+data/
+*.db

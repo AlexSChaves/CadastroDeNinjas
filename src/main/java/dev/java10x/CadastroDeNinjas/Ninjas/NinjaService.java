@@ -3,7 +3,9 @@ package dev.java10x.CadastroDeNinjas.Ninjas;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NinjaService {
@@ -17,14 +19,17 @@ public class NinjaService {
     }
 
     //Listar todos os meus ninjas
-    public List<NinjaModel> listarNinjas(){
-        return ninjaRepository.findAll();
+    public List<NinjaDTO> listarNinjas(){
+        List<NinjaModel> ninjas = ninjaRepository.findAll();
+        return ninjas.stream()
+                .map(ninjaMapper::map)
+                .collect(Collectors.toList());
     }
 
     //Listar todos os meus ninjas pelo ID
-    public NinjaModel listarNinjaPorID(Long id){
+    public NinjaDTO listarNinjaPorID(Long id){
         Optional<NinjaModel> ninjaPorID = ninjaRepository.findById(id);
-        return ninjaPorID.orElse(null);
+        return ninjaPorID.map(ninjaMapper::map).orElse(null);
     }
 
     //Criar ninjas
@@ -35,32 +40,30 @@ public class NinjaService {
     }
 
     //Atualizar ninjas
-    public NinjaModel atualizarNinja(Long id, NinjaModel ninjaAtualizado){
-        Optional<NinjaModel> ninjaExiste = ninjaRepository.findById(id);
+    public NinjaDTO atualizarNinja(Long id, NinjaDTO ninjaDTO){
+        Optional<NinjaModel> ninjaExistente = ninjaRepository.findById(id);
 
-        if (ninjaExiste.isPresent()){
-            NinjaModel ninja = ninjaExiste.get();
+        if(ninjaExistente.isPresent()){
+//            NinjaModel ninjaAtualizado = ninjaMapper.map(ninjaDTO);
+//            ninjaAtualizado.setId(id);
+//
+            NinjaModel ninjaAtualizado = ninjaExistente.get();
 
-            if(ninjaAtualizado.getNome() != null){
-                ninja.setNome(ninjaAtualizado.getNome());
-            }
-            if(ninjaAtualizado.getEmail() != null){
-                ninja.setEmail(ninjaAtualizado.getEmail());
-            }
-            if(ninjaAtualizado.getAldeia() != null){
-                ninja.setAldeia(ninjaAtualizado.getAldeia());
-            }
-            if(ninjaAtualizado.getIdade() != null && ninjaAtualizado.getIdade() > 0){
-                ninja.setIdade(ninjaAtualizado.getIdade());
-            }
-            if(ninjaAtualizado.getMissoes() != null){
-                ninja.setMissoes(ninjaAtualizado.getMissoes());
-            }
+            ninjaAtualizado.setNome(Objects.requireNonNullElse(ninjaDTO.getNome(), ninjaAtualizado.getNome()));
+            ninjaAtualizado.setEmail(Objects.requireNonNullElse(ninjaDTO.getEmail(), ninjaAtualizado.getEmail()));
+            ninjaAtualizado.setAldeia(Objects.requireNonNullElse(ninjaDTO.getAldeia(), ninjaAtualizado.getAldeia()));
+            ninjaAtualizado.setIdade(Objects.requireNonNullElse(ninjaDTO.getIdade(), ninjaAtualizado.getIdade()));
+            ninjaAtualizado.setRank(Objects.requireNonNullElse(ninjaDTO.getRank(), ninjaAtualizado.getRank()));
+            ninjaAtualizado.setMissoes(Objects.requireNonNullElse(ninjaDTO.getMissoes(), ninjaAtualizado.getMissoes()));
 
-            return ninjaRepository.save(ninja);
+            NinjaModel ninjaSalvo = ninjaRepository.save(ninjaAtualizado);
+
+
+            return ninjaMapper.map(ninjaSalvo);
         }
 
         return null;
+
     }
 
     //Deletar ninjas - É um metodo void
